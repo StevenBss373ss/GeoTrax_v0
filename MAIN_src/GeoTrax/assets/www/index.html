@@ -1,0 +1,203 @@
+<!-- Copyright (c) 2012 S373N Developer Solutions -->
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+    <title>GeoTrax with Google Maps</title>
+
+ 	<link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.1.0.min.css" />
+	<script src="jquery.mobile/jquery-1.7.2.min"></script>
+	<script src="jquery.mobile/jquery.mobile-1.1.0.min.js"></script>
+	
+	<link rel="stylesheet" href="index.css" /> 
+	<script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript" charset="utf-8" src="index.js"></script>
+  
+	<!-- CDN Respositories: For production, replace lines above with these uncommented minified versions -->
+	<!-- <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />-->
+	<!-- <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>-->
+	<!-- <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>-->
+	
+   <link rel="stylesheet" type="text/css" href="styless.css">
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry">
+  </script>
+   <script type="text/javascript" src="jvsCode.js"></script>	
+	
+  </head>
+  
+  <body onload="init();">
+	<div data-role="page" id="page-home" class="type-interior" data-theme="b">
+
+	<div data-role="header" data-theme="b">
+		<h1>GeoTrax with Google Maps</h1>
+ 		<a href="#" data-icon="home" data-iconpos="notext" id="intro" class="ui-btn-right">Home</a>
+	</div>
+
+	<div data-role="content" data-theme="c">			
+		<div class="content-secondary">
+			<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b">
+				<h3>Menu</h3>
+
+				<ul data-role="listview" data-theme="b" data-dividertheme="b">
+					<li id="listdivider" data-role="list-divider">Menu</li>
+					<li><a id="click-geolocation">GeoTrax ON/OFF</a></li>
+ 					<li><a id="click-connection">Location &amp; Connection</a></li>
+					
+					<li><a id="click-device">GPS Records</a></li>
+					
+					
+					
+					<li><a id="click-storage">Map Functions</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="content-primary">
+		    <div class="api-div" id="api-intro">
+		         <h2>GeoTrax</h2>
+				<blockquote>
+  					<p>GeoTrax will record your travels and show your path on a map.</p>
+				</blockquote>
+
+				<div>
+				<h4>You <strong>must start the GeoTrax Ability </strong>to see it demonstrated, <strong>by toggling it's start button. </strong></h4>
+				<h4 class="help">Ensure your<strong> GPS &amp; Network Location</strong> is on to ensure accurate results.</h4>
+				
+				<p id="copyright">&copy; 2012 S373N Mobile Solutions</p>
+				</div>		    					
+			</div>
+
+		    <div class="api-div" id="api-connection">
+				<h2>Connection Check</h2>
+				<div>Connection: <b id="connection"></b></div>
+				<blockquote>
+  					<p>This <strong>connection check</strong> shows which of your device's cellular and wifi connections are available.</p>
+				</blockquote>
+   				<div data-role="button" onclick="check_network();">Check Connection</div>
+   				
+   				
+   				<h2>Current Location</h2>
+				<blockquote>
+  					<p>Check your <strong>current position</strong>  with the device's GPS sensor.</p>
+  				</blockquote>
+  				<div data-role="button" onclick="getCurrentPosition();">Get Current</div>				
+   			<!--<div id="cur_position"></div>
+   				<img id="map"/> -->   
+			</div>
+
+  		    <div class="api-div" id="api-device">
+				<h2>GPS Records</h2>
+				<blockquote>
+					<p>The recorded <b>GPS coordinates</b> are displayed here.</p>
+				</blockquote>
+				<div id="list">
+      				<b>Locations list</b><br />
+      				<select id="locations" size="14" onchange="highlight(this.selectedIndex)" ondblclick="jumpToLocation()"></select>
+      				<br>
+      				<input type="button" value="Delete Selected Location" onclick="deleteLocation()"/>
+      				<input type="button" value="Delete All Locations" onclick="deleteAllLocations()"/>
+
+
+      </div>
+      										
+			</div>
+
+		    <div class="api-div" id="api-geolocation">
+				<h2>GeoTrax ON/OFF</h2>
+				<blockquote>
+  					<p>Turn <b>GeoTrax ON/OFF</b> monitoring.</p>
+				</blockquote>
+				<h4 class="help"><b>Toggle</b> to stop/start
+				GeoTrax watch. <br/><b>Get Current</b> for one-time geolocation reading.</h4>
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+   						<div class="containing-element">					
+						<select name="slider" id="flip-min" data-role="slider" onchange="toggleWatchPosition();">
+						<option value="off">Toggle Off</option>
+						<option value="on">Toggle On</option>
+						</select>
+						</div>
+					</div>
+					<div class="ui-block-b"><div data-role="button" onclick="getCurrentPosition();">Get Current</div></div>
+				</div>
+				<br>
+   				<div id="cur_position"></div>
+   				<img id="map"/>
+   				
+
+			</div>
+
+		    <div class="api-div" id="api-storage">
+				<h2>Displayed Google Map</h2>
+				<blockquote>
+  					<p>Provides functions for a detailed Map.</p>
+				</blockquote>
+				<div id="form">
+      				<form method="post" action="javascript:void(0)" onsubmit="centerMap()">
+        			Center Map with your "Address", "Zipcode" or Nearby location:
+        			<input type="text" id="txtAddress"/>
+        			<input type="submit" value="Center Map"/>
+      			</form>
+      			</div><div id="map_canvas"></div>
+				<br>
+			</div>
+		
+		</div>
+
+	</div>
+</div>
+	<div data-role="footer" data-position="fixed" class="footer-docs" data-theme="b">
+		<p>&copy; 2012 S373N Mobile Solutions</p>
+	</div>	
+		
+
+<div id="hide">
+	
+	<div id="form">
+      <form method="post" action="javascript:void(0)" onsubmit="centerMap()">
+        Center map at:
+        <input type="text" id="txtAddress"/>
+        <input type="submit" value="Search"/>
+      </form>
+      
+   </div><br>
+
+   <div id="latlong">
+          <input id="txtLatitude" maxlength="11" type="text" class="inputField"/>
+       <input id="txtLongitude" maxlength="11" type="text" class="inputField"/>
+       <input id="txtLevel" type="text" size=3 value="3"/><br>
+          <input type="button" value="Add Location" onclick="addLocationFromInput()"/>
+      <br>
+      </div>
+      <br>
+      <div id="ecode"><table>
+        <tr>
+          <td>Encoded Polyline:</td>
+          <td><textarea id="encodedPolyline" class="encodeBox"></textarea></td>
+        </tr>
+        <tr>
+          <td>Encoded Levels:</td>
+          <td><textarea id="encodedLevels" class="encodeBox"></textarea></td>
+        </tr>
+        <tr>
+          <td colspan=2 align="right">
+            <p><input type="button" value="Decode Polyline"
+                onclick="decodePath()"/>
+              Note: default level 3 (all levels)</p>
+          </td>
+        </tr>
+      </table></div>
+     <!-- end hidden div tag below --> 	
+	</div>
+	
+</div>
+	<script type="text/javascript" charset="utf-8" src="apis/connection.js"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="apis/device.js"></script>
+	
+	
+	<script async type="text/javascript" charset="utf-8" src="apis/geolocation.js"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="apis/storage.js"></script> 			
+  </body>
+</html>

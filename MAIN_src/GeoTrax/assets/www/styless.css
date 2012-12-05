@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+
+span.new {
+        vertical-align: super;
+        color: #cc0000;
+        font-size: 70%;
+      }
+      .encodeBox {
+        width: 550px;
+        height: 40px;
+        font-size: 14px;
+        font-family: Courier;
+      }
+      .inputField {
+        width: 160px;
+      }
+      #locations {
+        width: 300px;
+        font-size: 12px;
+      }
+      #map_canvas {
+        width: auto; 
+		height: 260px;
+        border: 1px solid gray;
+        margin-top:6px;
+      }
+      #txtAddress {
+        width: 14em;
+      }
